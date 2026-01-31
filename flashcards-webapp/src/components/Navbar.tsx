@@ -1,0 +1,57 @@
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+
+export default function Navbar() {
+  const pathname = usePathname()
+
+  const isActive = (path: string) => pathname === path
+
+  return (
+    <nav className="bg-blue-600 text-white shadow-lg">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="flex justify-between items-center h-16">
+          <Link href="/" className="text-xl font-bold">
+            TravelAgency
+          </Link>
+
+          <div className="flex space-x-4">
+            <Link 
+              href="/"
+              className={`px-3 py-2 rounded-md ${
+                isActive('/') ? 'bg-blue-700' : 'hover:bg-blue-500'
+              }`}
+            >
+              Početna
+            </Link>
+            <Link 
+              href="/arrangements"
+              className={`px-3 py-2 rounded-md ${
+                isActive('/arrangements') ? 'bg-blue-700' : 'hover:bg-blue-500'
+              }`}
+            >
+              Aranžmani
+            </Link>
+            <Link 
+              href="/login"
+              className={`px-3 py-2 rounded-md ${
+                isActive('/login') ? 'bg-blue-700' : 'hover:bg-blue-500'
+              }`}
+            >
+              Prijava
+            </Link>
+            <Link 
+              href="/register"
+              className={`px-3 py-2 rounded-md ${
+                isActive('/register') ? 'bg-blue-700' : 'hover:bg-blue-500'
+              }`}
+            >
+              Registracija
+            </Link>
+          </div>
+        </div>
+      </div>
+    </nav>
+  )
+}

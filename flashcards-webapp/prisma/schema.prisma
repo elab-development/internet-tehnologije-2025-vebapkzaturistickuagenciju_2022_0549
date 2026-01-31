@@ -44,6 +44,8 @@ model Arrangement {
   numberOfNights Int
   imageUrl      String?
   categoryId    Int
+  isActive       Boolean       @default(true)
+  capacity       Int           @default(20)
   category      Category      @relation(fields: [categoryId], references: [id])
   reservations  Reservation[]
   discounts     Discount[]

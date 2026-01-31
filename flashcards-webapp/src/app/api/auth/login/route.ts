@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcrypt'
-
+import { createToken } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
-
     const body = await request.json()
     const { email, password } = body
-
 
     if (!email || !password) {
       return NextResponse.json(
@@ -17,11 +15,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-
     const user = await prisma.user.findUnique({
       where: { email }
     })
-
 
     if (!user) {
       return NextResponse.json(
@@ -29,7 +25,6 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       )
     }
-
 
     const passwordMatch = await bcrypt.compare(password, user.password)
 
@@ -41,9 +36,16 @@ export async function POST(request: NextRequest) {
     }
 
 
+    const token = createToken({
+      id: user.id,
+      email: user.email,
+      role: user.role
+    })
+
     return NextResponse.json(
       {
         message: 'Uspešna prijava',
+        token,
         user: {
           id: user.id,
           firstName: user.firstName,

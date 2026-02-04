@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { checkAuth } from '@/lib/auth'
 
 export async function GET(
   request: NextRequest,
@@ -49,6 +50,14 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = checkAuth(request)
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Morate biti prijavljeni' },
+        { status: 401 }
+      )
+    }
+
     const { id } = await params
     const body = await request.json()
     const { status } = body
@@ -106,6 +115,14 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = checkAuth(request)
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Morate biti prijavljeni' },
+        { status: 401 }
+      )
+    }
+
     const { id } = await params
 
     const existingReservation = await prisma.reservation.findUnique({

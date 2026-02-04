@@ -1,3 +1,4 @@
+import { checkAuth } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -54,6 +55,15 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+
+    const user = checkAuth(request)
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Morate biti prijavljeni' },
+        { status: 401 }
+      )
+    }
+    
     const body = await request.json()
     const {
       destination,

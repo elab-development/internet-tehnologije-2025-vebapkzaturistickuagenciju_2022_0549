@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { checkAuth } from '@/lib/auth'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export async function GET(request: NextRequest) {
@@ -48,6 +49,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const user = checkAuth(request)
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Morate biti prijavljeni' },
+        { status: 401 }
+      )
+    }
+
     const body = await request.json()
     const { userId, arrangementId } = body
 
@@ -58,11 +67,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const user = await prisma.user.findUnique({
+    const userExists = await prisma.user.findUnique({
       where: { id: userId }
     })
 
-    if (!user) {
+    if (!userExists) {
       return NextResponse.json(
         { error: 'Korisnik ne postoji' },
         { status: 404 }

@@ -1,8 +1,6 @@
 'use client'
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
-
 
 import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
@@ -53,7 +51,7 @@ export default function ArrangementDetailPage({
       }
       const data = await response.json()
       setArrangement(data)
-    } catch (_err) {
+    } catch {
       setError('Greška pri učitavanju')
     } finally {
       setLoading(false)
@@ -72,9 +70,14 @@ export default function ArrangementDetailPage({
     setMessage('')
 
     try {
+      const token = localStorage.getItem('token')
+
       const response = await fetch('/api/reservations', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({
           userId: user.id,
           arrangementId: parseInt(id)
@@ -89,7 +92,7 @@ export default function ArrangementDetailPage({
       }
 
       setMessage('Rezervacija uspešno kreirana!')
-    } catch (_err) {
+    } catch {
       setMessage('Greška pri povezivanju sa serverom')
     } finally {
       setReserving(false)
@@ -119,7 +122,6 @@ export default function ArrangementDetailPage({
     return new Date(dateStr).toLocaleDateString('sr-RS')
   }
 
-  // Izračunaj cenu sa popustom
   let finalPrice = arrangement.price
   const activeDiscount = arrangement.discounts?.[0]
   if (activeDiscount) {
@@ -132,7 +134,6 @@ export default function ArrangementDetailPage({
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Slika */}
       <div className="rounded-lg overflow-hidden mb-6">
         <img
           src={arrangement.imageUrl || `https://picsum.photos/seed/${arrangement.destination}/800/400`}
@@ -141,18 +142,14 @@ export default function ArrangementDetailPage({
         />
       </div>
 
-      {/* Kategorija */}
       <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
         {arrangement.category?.name}
       </span>
 
-      {/* Naslov */}
       <h1 className="text-3xl font-bold mt-4">{arrangement.destination}</h1>
 
-      {/* Opis */}
       <p className="text-gray-600 mt-4">{arrangement.description}</p>
 
-      {/* Detalji */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 bg-gray-50 p-4 rounded-lg">
         <div>
           <p className="text-sm text-gray-500">Polazak</p>
@@ -179,7 +176,6 @@ export default function ArrangementDetailPage({
         </div>
       </div>
 
-      {/* Poruka */}
       {message && (
         <div className={`mt-4 p-3 rounded-lg ${
           message.includes('uspešno') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
@@ -188,7 +184,6 @@ export default function ArrangementDetailPage({
         </div>
       )}
 
-      {/* Dugmad */}
       <div className="flex gap-4 mt-6">
         <Button onClick={() => router.back()} variant="secondary">
           Nazad

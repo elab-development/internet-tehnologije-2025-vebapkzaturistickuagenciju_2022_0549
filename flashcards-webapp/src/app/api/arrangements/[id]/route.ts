@@ -1,3 +1,4 @@
+import { checkAuth } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -40,6 +41,15 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Provera autentifikacije
+    const user = checkAuth(request)
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Morate biti prijavljeni' },
+        { status: 401 }
+      )
+    }
+
     const { id } = await params
     const body = await request.json()
 
@@ -88,6 +98,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Provera autentifikacije
+    const user = checkAuth(request)
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Morate biti prijavljeni' },
+        { status: 401 }
+      )
+    }
+
     const { id } = await params
 
     const existingArrangement = await prisma.arrangement.findUnique({

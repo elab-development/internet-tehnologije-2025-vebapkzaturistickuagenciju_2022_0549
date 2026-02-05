@@ -47,7 +47,7 @@ export default function HomePage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center mb-8">
-        Dobrodošli u Travel Agency
+        Dobrodošli u TellyTravel agenciju
       </h1>
       <p className="text-center text-gray-600 mb-8">
         Pronađite savršen aranžman za vaš odmor

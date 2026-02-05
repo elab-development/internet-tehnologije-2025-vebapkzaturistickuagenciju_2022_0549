@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Travel Agency',
+  title: 'TellyTravel',
   description: 'Turistička agencija - rezervišite svoj odmor',
 }
 

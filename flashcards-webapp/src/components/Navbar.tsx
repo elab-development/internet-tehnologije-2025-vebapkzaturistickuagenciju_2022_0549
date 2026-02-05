@@ -9,18 +9,18 @@ export default function Navbar() {
   const isActive = (path: string) => pathname === path
 
   return (
-    <nav className="bg-blue-600 text-white shadow-lg">
+    <nav className="bg-purple-600 text-white shadow-lg">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="text-xl font-bold">
-            TravelAgency
+            TellyTravel
           </Link>
 
           <div className="flex space-x-4">
             <Link 
               href="/"
               className={`px-3 py-2 rounded-md ${
-                isActive('/') ? 'bg-blue-700' : 'hover:bg-blue-500'
+                isActive('/') ? 'bg-purple-700' : 'hover:bg-purple-500'
               }`}
             >
               Početna
@@ -28,7 +28,7 @@ export default function Navbar() {
             <Link 
               href="/arrangements"
               className={`px-3 py-2 rounded-md ${
-                isActive('/arrangements') ? 'bg-blue-700' : 'hover:bg-blue-500'
+                isActive('/arrangements') ? 'bg-purple-700' : 'hover:bg-purple-500'
               }`}
             >
               Aranžmani
@@ -36,7 +36,7 @@ export default function Navbar() {
             <Link 
               href="/login"
               className={`px-3 py-2 rounded-md ${
-                isActive('/login') ? 'bg-blue-700' : 'hover:bg-blue-500'
+                isActive('/login') ? 'bg-purple-700' : 'hover:bg-purple-500'
               }`}
             >
               Prijava
@@ -44,7 +44,7 @@ export default function Navbar() {
             <Link 
               href="/register"
               className={`px-3 py-2 rounded-md ${
-                isActive('/register') ? 'bg-blue-700' : 'hover:bg-blue-500'
+                isActive('/register') ? 'bg-purple-700' : 'hover:bg-purple-500'
               }`}
             >
               Registracija

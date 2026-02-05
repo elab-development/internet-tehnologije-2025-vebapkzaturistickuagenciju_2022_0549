@@ -13,7 +13,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="text-xl font-bold">
-            TellyTravel
+            TallyTravel
           </Link>
 
           <div className="flex space-x-4">
@@ -49,6 +49,16 @@ export default function Navbar() {
             >
               Registracija
             </Link>
+            <button
+              onClick={() => {
+                localStorage.removeItem('token')
+                localStorage.removeItem('user')
+                window.location.href = '/'
+              }}
+              className="px-3 py-2 rounded-md hover:bg-purple-500"
+            >
+              Odjava
+            </button>
           </div>
         </div>
       </div>

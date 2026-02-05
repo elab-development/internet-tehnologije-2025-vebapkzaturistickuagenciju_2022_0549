@@ -41,7 +41,6 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Provera autentifikacije
     const user = checkAuth(request)
     if (!user) {
       return NextResponse.json(
@@ -98,7 +97,6 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Provera autentifikacije
     const user = checkAuth(request)
     if (!user) {
       return NextResponse.json(

@@ -4,6 +4,7 @@ interface CardProps {
   title: string
   description: string
   price?: number
+  discountedPrice?: number
   imageUrl?: string
   category?: string
   onClick?: () => void
@@ -13,6 +14,7 @@ export default function Card({
   title,
   description,
   price,
+  discountedPrice,
   imageUrl,
   category,
   onClick
@@ -31,16 +33,23 @@ export default function Card({
       )}
       <div className="p-4">
         {category && (
-          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+          <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
             {category}
           </span>
         )}
         <h3 className="text-lg font-semibold mt-2">{title}</h3>
         <p className="text-gray-600 text-sm mt-1 line-clamp-2">{description}</p>
         {price && (
-          <p className="text-xl font-bold text-blue-600 mt-3">
-            {price} €
-          </p>
+          <div className="mt-3">
+            {discountedPrice && discountedPrice < price ? (
+              <div className="flex items-center gap-2">
+                <p className="text-gray-400 line-through">{price} €</p>
+                <p className="text-xl font-bold text-green-600">{discountedPrice.toFixed(2)} €</p>
+              </div>
+            ) : (
+              <p className="text-xl font-bold text-purple-600">{price} €</p>
+            )}
+          </div>
         )}
       </div>
     </div>

@@ -44,7 +44,7 @@ export default function LoginPage() {
       localStorage.setItem('token', data.token)
       localStorage.setItem('user', JSON.stringify(data.user))
 
-      router.push('/')
+      window.location.href = '/'
     } catch (err) {
       setError('Greška pri povezivanju sa serverom')
     } finally {

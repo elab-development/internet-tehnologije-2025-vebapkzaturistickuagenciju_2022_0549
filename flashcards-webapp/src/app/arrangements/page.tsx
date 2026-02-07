@@ -9,6 +9,12 @@ interface Category {
   name: string
 }
 
+interface Discount {
+  id: number
+  type: string
+  value: number
+}
+
 interface Arrangement {
   id: number
   destination: string
@@ -18,6 +24,7 @@ interface Arrangement {
   category: {
     name: string
   }
+  discounts: Discount[]
 }
 
 export default function ArrangementsPage() {
@@ -64,6 +71,19 @@ export default function ArrangementsPage() {
     fetchArrangements(categoryId)
   }
 
+  const calculateDiscountedPrice = (arrangement: Arrangement) => {
+    if (!arrangement.discounts || arrangement.discounts.length === 0) {
+      return null
+    }
+    
+    const discount = arrangement.discounts[0]
+    if (discount.type === 'percentage' || discount.type === 'lastMinute') {
+      return arrangement.price * (1 - discount.value / 100)
+    } else {
+      return arrangement.price - discount.value
+    }
+  }
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center mb-8">
@@ -77,7 +97,7 @@ export default function ArrangementsPage() {
         <select
           value={selectedCategory}
           onChange={handleCategoryChange}
-          className="w-full md:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full md:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
         >
           <option value="">Sve kategorije</option>
           {categories.map((cat) => (
@@ -105,6 +125,7 @@ export default function ArrangementsPage() {
                 title={arrangement.destination}
                 description={arrangement.description}
                 price={arrangement.price}
+                discountedPrice={calculateDiscountedPrice(arrangement) || undefined}
                 imageUrl={arrangement.imageUrl || undefined}
                 category={arrangement.category?.name}
                 onClick={() => router.push(`/arrangements/${arrangement.id}`)}

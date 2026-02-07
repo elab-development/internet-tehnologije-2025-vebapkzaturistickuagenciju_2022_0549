@@ -4,6 +4,12 @@ import { useState, useEffect } from 'react'
 import Card from '@/components/Card'
 import { useRouter } from 'next/navigation'
 
+interface Discount {
+  id: number
+  type: string
+  value: number
+}
+
 interface Arrangement {
   id: number
   destination: string
@@ -13,6 +19,7 @@ interface Arrangement {
   category: {
     name: string
   }
+  discounts: Discount[]
 }
 
 export default function HomePage() {
@@ -36,6 +43,19 @@ export default function HomePage() {
     }
   }
 
+  const calculateDiscountedPrice = (arrangement: Arrangement) => {
+    if (!arrangement.discounts || arrangement.discounts.length === 0) {
+      return null
+    }
+    
+    const discount = arrangement.discounts[0]
+    if (discount.type === 'percentage' || discount.type === 'lastMinute') {
+      return arrangement.price * (1 - discount.value / 100)
+    } else {
+      return arrangement.price - discount.value
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -47,7 +67,7 @@ export default function HomePage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center mb-8">
-        Dobrodošli u TellyTravel agenciju
+        Dobrodošli u <span className="text-purple-600">Telly</span>Travel
       </h1>
       <p className="text-center text-gray-600 mb-8">
         Pronađite savršen aranžman za vaš odmor
@@ -60,6 +80,7 @@ export default function HomePage() {
             title={arrangement.destination}
             description={arrangement.description}
             price={arrangement.price}
+            discountedPrice={calculateDiscountedPrice(arrangement) || undefined}
             imageUrl={arrangement.imageUrl || undefined}
             category={arrangement.category?.name}
             onClick={() => router.push(`/arrangements/${arrangement.id}`)}

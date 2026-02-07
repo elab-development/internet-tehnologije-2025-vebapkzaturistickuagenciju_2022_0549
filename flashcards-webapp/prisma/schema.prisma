@@ -16,6 +16,7 @@ model User {
   password     String
   role         Role          @default(CLIENT)
   createdAt    DateTime      @default(now())
+  status       String        @default("ACTIVE")
   updatedAt    DateTime      @updatedAt
   reservations Reservation[]
 }

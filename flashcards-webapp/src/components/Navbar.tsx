@@ -3,16 +3,31 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 export default function Navbar() {
   const pathname = usePathname()
-  const [user, setUser] = useState<{ role: string } | null>(null)
+  const [user, setUser] = useState<{ firstName: string; lastName: string; role: string } | null>(null)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const userStr = localStorage.getItem('user')
     if (userStr) {
       setUser(JSON.parse(userStr))
+    }
+  }, [])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
 
@@ -22,6 +37,7 @@ export default function Navbar() {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     setUser(null)
+    setIsDropdownOpen(false)
     window.location.href = '/'
   }
 
@@ -50,28 +66,6 @@ export default function Navbar() {
             >
               Aranžmani
             </Link>
-            <Link 
-              href="/login"
-              className={`px-3 py-2 rounded-md ${
-                isActive('/login') ? 'bg-purple-700' : 'hover:bg-purple-500'
-              }`}
-            >
-              Prijava
-            </Link>
-            <Link 
-              href="/register"
-              className={`px-3 py-2 rounded-md ${
-                isActive('/register') ? 'bg-purple-700' : 'hover:bg-purple-500'
-              }`}
-            >
-              Registracija
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="px-3 py-2 rounded-md hover:bg-purple-500"
-            >
-              Odjava
-            </button>
 
             {(user?.role === 'AGENT' || user?.role === 'ADMIN') && (
               <Link 
@@ -100,6 +94,56 @@ export default function Navbar() {
                 </svg>
               </Link>
             )}
+
+            {/* Padajući meni za profil */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className={`px-3 py-2 rounded-md flex items-center gap-2 ${
+                  isDropdownOpen ? 'bg-purple-700' : 'hover:bg-purple-500'
+                }`}
+              >
+                <span>{user ? `${user.firstName} ${user.lastName}` : 'Profil'}</span>
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className={`h-4 w-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                  viewBox="0 0 20 20" 
+                  fill="currentColor"
+                >
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                  {user ? (
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    >
+                      Odjavi se
+                    </button>
+                  ) : (
+                    <>
+                      <Link
+                        href="/login"
+                        onClick={() => setIsDropdownOpen(false)}
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      >
+                        Prijava
+                      </Link>
+                      <Link
+                        href="/register"
+                        onClick={() => setIsDropdownOpen(false)}
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      >
+                        Registracija
+                      </Link>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -35,7 +35,7 @@ export default function HomePage() {
     try {
       const response = await fetch('/api/arrangements')
       const data = await response.json()
-      setArrangements(data)
+      setArrangements(Array.isArray(data) ? data : data.arrangements ?? [])
     } catch (error) {
       console.error('Greška pri učitavanju:', error)
     } finally {

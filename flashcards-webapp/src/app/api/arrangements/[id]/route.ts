@@ -120,7 +120,7 @@ export async function DELETE(
     }
 
     const activeReservations = existingArrangement.reservations.filter(
-      r => r.status === 'PENDING' || r.status === 'CONFIRMED'
+      (r: { status: string }) => r.status === 'PENDING' || r.status === 'CONFIRMED'
     )
 
     if (activeReservations.length > 0) {

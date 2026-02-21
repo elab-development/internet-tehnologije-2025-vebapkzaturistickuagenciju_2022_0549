@@ -1,36 +1,125 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Veb Aplikacija za Turističku Agenciju
 
-## Getting Started
+Fullstack web aplikacija za upravljanje turističkom agencijom, razvijena kao seminarski rad u okviru predmeta Internet Tehnologije 2025.
 
-First, run the development server:
+## O aplikaciji
+
+Aplikacija omogućava korisnicima pregled i rezervaciju turističkih aranžmana, a administratorima i agentima upravljanje aranžmanima, rezervacijama, korisnicima i popustima.
+
+### Uloge korisnika
+
+- **Admin** — upravljanje korisnicima, aranžmanima, kategorijama i popustima
+- **Agent** — upravljanje aranžmanima i rezervacijama
+- **Klijent** — pregled aranžmana i pravljenje rezervacija
+
+### Tehnologije
+
+- **Frontend & Backend:** Next.js 16 (App Router, TypeScript)
+- **Baza podataka:** PostgreSQL
+- **ORM:** Prisma
+- **Autentifikacija:** JWT
+- **Stilizacija:** Tailwind CSS
+- **Kontejnerizacija:** Docker, Docker Compose
+
+---
+
+## Pokretanje aplikacije
+
+### Preduslovi
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Node.js 20+](https://nodejs.org/) (za lokalni razvoj)
+
+### 1. Kloniranje repozitorijuma
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/elab-development/internet-tehnologije-2025-vebapkzaturistickuagenciju_2022_0549.git
+cd internet-tehnologije-2025-vebapkzaturistickuagenciju_2022_0549/flashcards-webapp
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Podešavanje environment varijabli
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Kreiraj `.env` fajl u `flashcards-webapp/` folderu:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/flashcards
+JWT_SECRET=tvoj_tajni_kljuc
+```
 
-## Learn More
+### 3. Lokalni build
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install
+npx prisma generate
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4. Pokretanje sa Docker Compose
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+docker-compose up
+```
 
-## Deploy on Vercel
+Aplikacija je dostupna na: **http://localhost:3000**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 5. Punjenje baze test podacima (opciono)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/flashcards" npx ts-node --compiler-options '{"module":"CommonJS"}' prisma/seed.ts
+```
+
+#### Test kredencijali
+
+| Uloga   | Email                  | Lozinka    |
+|---------|------------------------|------------|
+| Admin   | admin@agencija.com     | admin123   |
+| Agent   | agent@agencija.com     | agent123   |
+| Klijent | petar@gmail.com        | klijent123 |
+
+---
+
+## Struktura projekta
+
+```
+flashcards-webapp/
+├── src/
+│   ├── app/
+│   │   ├── api/          # REST API rute
+│   │   ├── admin/        # Admin panel
+│   │   ├── agent/        # Agent panel
+│   │   ├── arrangements/ # Pregled aranžmana
+│   │   ├── login/        # Prijava
+│   │   └── register/     # Registracija
+│   ├── components/       # Reusable komponente
+│   └── lib/              # Prisma klijent, auth utils
+├── prisma/
+│   ├── schema.prisma     # Šema baze podataka
+│   ├── migrations/       # Migracije
+│   └── seed.ts           # Test podaci
+├── Dockerfile
+└── docker-compose.yml
+```
+
+## API Endpointi
+
+| Metoda | Endpoint                    | Opis                        |
+|--------|-----------------------------|-----------------------------|
+| POST   | /api/auth/login             | Prijava korisnika           |
+| POST   | /api/auth/register          | Registracija korisnika      |
+| GET    | /api/arrangements           | Lista aranžmana             |
+| POST   | /api/arrangements           | Kreiranje aranžmana         |
+| GET    | /api/arrangements/:id       | Detalji aranžmana           |
+| PUT    | /api/arrangements/:id       | Izmena aranžmana            |
+| DELETE | /api/arrangements/:id       | Brisanje aranžmana          |
+| GET    | /api/reservations           | Lista rezervacija           |
+| POST   | /api/reservations           | Kreiranje rezervacije       |
+| GET    | /api/categories             | Lista kategorija            |
+| GET    | /api/discounts              | Lista popusta               |
+| GET    | /api/users                  | Lista korisnika (admin)     |
+
+## Git grane
+
+- `main` — stabilna produkciona verzija
+- `develop` — integraciona grana
+- `feature/auth` — autentifikacija i autorizacija
+- `feature/arrangements` — upravljanje aranžmanima

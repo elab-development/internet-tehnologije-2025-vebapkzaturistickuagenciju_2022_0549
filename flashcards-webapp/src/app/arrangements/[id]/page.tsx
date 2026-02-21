@@ -5,6 +5,7 @@
 import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Button from '@/components/Button'
+import WeatherAndExchange from '@/components/WeatherAndExchange'
 
 interface Arrangement {
   id: number
@@ -175,6 +176,8 @@ export default function ArrangementDetailPage({
           )}
         </div>
       </div>
+
+      <WeatherAndExchange destination={arrangement.destination} price={finalPrice} />
 
       {message && (
         <div className={`mt-4 p-3 rounded-lg ${

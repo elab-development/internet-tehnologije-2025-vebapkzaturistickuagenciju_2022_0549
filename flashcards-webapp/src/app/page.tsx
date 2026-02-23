@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Card from '@/components/Card'
+import HeroSlideshow from '@/components/HeroSlideshow'
 import { useRouter } from 'next/navigation'
 
 interface Discount {
@@ -47,7 +48,6 @@ export default function HomePage() {
     if (!arrangement.discounts || arrangement.discounts.length === 0) {
       return null
     }
-    
     const discount = arrangement.discounts[0]
     if (discount.type === 'percentage' || discount.type === 'lastMinute') {
       return arrangement.price * (1 - discount.value / 100)
@@ -65,34 +65,34 @@ export default function HomePage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        Dobrodošli u <span className="text-purple-600">Telly</span>Travel
-      </h1>
-      <p className="text-center text-gray-600 mb-8">
-        Pronađite savršen aranžman za vaš odmor
-      </p>
+    <div>
+      <HeroSlideshow />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {arrangements.map((arrangement) => (
-          <Card
-            key={arrangement.id}
-            title={arrangement.destination}
-            description={arrangement.description}
-            price={arrangement.price}
-            discountedPrice={calculateDiscountedPrice(arrangement) || undefined}
-            imageUrl={arrangement.imageUrl || undefined}
-            category={arrangement.category?.name}
-            onClick={() => router.push(`/arrangements/${arrangement.id}`)}
-          />
-        ))}
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <h2 className="text-2xl font-bold mb-2">Dostupni aranžmani</h2>
+        <p className="text-gray-600 mb-6">Pronađite savršen odmor za vas</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {arrangements.map((arrangement) => (
+            <Card
+              key={arrangement.id}
+              title={arrangement.destination}
+              description={arrangement.description}
+              price={arrangement.price}
+              discountedPrice={calculateDiscountedPrice(arrangement) || undefined}
+              imageUrl={arrangement.imageUrl || undefined}
+              category={arrangement.category?.name}
+              onClick={() => router.push(`/arrangements/${arrangement.id}`)}
+            />
+          ))}
+        </div>
+
+        {arrangements.length === 0 && (
+          <p className="text-center text-gray-500 mt-12">
+            Nema dostupnih aranžmana.
+          </p>
+        )}
       </div>
-
-      {arrangements.length === 0 && (
-        <p className="text-center text-gray-500">
-          Nema dostupnih aranžmana.
-        </p>
-      )}
     </div>
   )
 }
